@@ -27,14 +27,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',
     'django.contrib.staticfiles',
-    'cloudinary',
     # Project apps
     'accounts.apps.AccountsConfig',
     'farmer.apps.FarmerConfig',
     'admin_panel.apps.AdminPanelConfig',
     'prediction.apps.PredictionConfig',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
