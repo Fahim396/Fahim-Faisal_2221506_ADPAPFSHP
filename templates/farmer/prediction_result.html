@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Prediction Result{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/prediction.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout" id="prediction-result-page">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">🧠 Prediction Result</h1>
+                <p class="page-subtitle">AI analysis for your {{ prediction.farm_data.get_crop_type_display }} crop</p>
+            </div>
+            <div class="header-actions">
+                <a href="{% url 'farmer:data_entry' %}" class="btn btn-primary" id="new-prediction-btn">+ Pest Prediction</a>
+                <a href="{% url 'farmer:history' %}" class="btn btn-outline" id="back-history">← History</a>
+            </div>
+        </div>
+
+        <!-- Risk Level Hero -->
+        <div class="risk-hero risk-hero-{{ prediction.risk_level }}" id="risk-hero">
+            <div class="risk-hero-content">
+                <div class="risk-level-display">
+                    <span class="risk-emoji">
+                        {% if prediction.risk_level == 'high' %}🔴
+                        {% elif prediction.risk_level == 'medium' %}🟡
+                        {% else %}🟢{% endif %}
+                    </span>
+                    <div>
+                        <h2 class="risk-level-text">{{ prediction.get_risk_level_display }} Risk</h2>
+                        <p class="risk-pest">Predicted Pest: <strong>{{ prediction.predicted_pest }}</strong></p>
+                    </div>
+                </div>
+                <div class="confidence-display" id="confidence-score">
+                    <div class="confidence-circle">
+                        <svg viewBox="0 0 120 120" class="confidence-svg">
+                            <circle cx="60" cy="60" r="50" class="confidence-bg"/>
+                            <circle cx="60" cy="60" r="50" class="confidence-fill"
+                                    style="stroke-dasharray: {{ prediction.confidence_score|floatformat:2 }}
+                                    calc(314.16 - 314.16 * {{ prediction.confidence_score }});
+                                    stroke-dashoffset: 0;"
+                                    data-value="{{ prediction.confidence_score }}"/>
+                        </svg>
+                        <span class="confidence-text">{{ prediction.confidence_percent }}</span>
+                    </div>
+                    <span class="confidence-label">Confidence Score</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-grid">
+            <!-- Farm Data Summary -->
+            <div class="result-card" id="farm-data-summary">
+                <h3 class="card-title">📋 Farm Data Summary</h3>
+                <div class="data-table">
+                    <div class="data-row">
+                        <span class="data-label">Crop Type</span>
+                        <span class="data-value">{{ prediction.farm_data.get_crop_type_display }}</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Soil Condition</span>
+                        <span class="data-value">{{ prediction.farm_data.get_soil_condition_display }}</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Weather</span>
+                        <span class="data-value">{{ prediction.farm_data.get_weather_display }}</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Temperature</span>
+                        <span class="data-value">{{ prediction.farm_data.temperature }}°C</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Humidity</span>
+                        <span class="data-value">{{ prediction.farm_data.humidity }}%</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Planting Date</span>
+                        <span class="data-value">{{ prediction.farm_data.planting_date|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Farm Area</span>
+                        <span class="data-value">{{ prediction.farm_data.farm_area }} acres</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Submitted</span>
+                        <span class="data-value">{{ prediction.created_at|date:"M d, Y H:i" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="result-card" id="recommendations-card">
+                <h3 class="card-title">🛡️ Smart Recommendations</h3>
+                <div class="recommendations-list">
+                    {% for line in prediction.recommendation.splitlines %}
+                        {% if line.strip %}
+                        <div class="recommendation-item">
+                            {{ line }}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Risk Factor Breakdown -->
+            <div class="result-card result-card-full" id="risk-factors-card">
+                <h3 class="card-title">📊 Risk Factor Breakdown</h3>
+                <div class="factors-grid">
+                    {% for factor_name, factor_data in prediction.details.factors.items %}
+                    <div class="factor-item" id="factor-{{ factor_name }}">
+                        <div class="factor-header">
+                            <span class="factor-name">{{ factor_name|title }}</span>
+                            <span class="factor-value">{{ factor_data.value }}</span>
+                        </div>
+                        <div class="factor-bar-bg">
+                            <div class="factor-bar" style="width: {{ factor_data.score|floatformat:0 }}%"
+                                 data-score="{{ factor_data.score }}"></div>
+                        </div>
+                        <span class="factor-score">Risk Score: {{ factor_data.score }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

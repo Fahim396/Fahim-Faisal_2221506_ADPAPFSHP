@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reports & Analytics{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout" id="reports-page">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">📊 Reports & Analytics</h1>
+                <p class="page-subtitle">System-wide analytics and reporting</p>
+            </div>
+            <a href="{% url 'admin_panel:dashboard' %}" class="btn btn-outline">← Dashboard</a>
+        </div>
+
+        <!-- Risk Analysis -->
+        <div class="dashboard-grid">
+            <div class="dashboard-card" id="risk-analysis-card">
+                <div class="card-header">
+                    <h2 class="card-title">🎯 Risk Level Analysis</h2>
+                </div>
+                <div class="card-body">
+                    {% for stat in risk_stats %}
+                    <div class="report-stat-row">
+                        <span class="risk-badge risk-{{ stat.risk_level }}">{{ stat.risk_level|title }} Risk</span>
+                        <div class="report-stat-values">
+                            <span class="report-count">{{ stat.count }} predictions</span>
+                            <span class="report-avg">Avg Confidence: {{ stat.avg_confidence|floatformat:1 }}%</span>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state"><p>No prediction data available.</p></div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Monthly Trends -->
+            <div class="dashboard-card" id="monthly-trends-card">
+                <div class="card-header">
+                    <h2 class="card-title">📈 Monthly Prediction Trends</h2>
+                </div>
+                <div class="card-body">
+                    <div class="chart-placeholder">
+                        {% for month in monthly_data %}
+                        <div class="chart-bar-item">
+                            <span class="chart-label">{{ month.month }}</span>
+                            <div class="chart-bar-bg">
+                                <div class="chart-bar chart-bar-primary"
+                                     style="width: {% if month.count > 0 %}{% widthratio month.count 50 100 %}{% else %}2{% endif %}%">
+                                </div>
+                            </div>
+                            <span class="chart-count">{{ month.count }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crop and Weather Analysis -->
+        <div class="dashboard-grid">
+            <div class="dashboard-card" id="crop-analysis-card">
+                <div class="card-header">
+                    <h2 class="card-title">🌾 Crop Analysis</h2>
+                </div>
+                <div class="card-body">
+                    {% for stat in crop_stats %}
+                    <div class="report-stat-row">
+                        <span class="crop-badge">{{ stat.crop_type|title }}</span>
+                        <span class="report-count">{{ stat.count }} entries</span>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state"><p>No crop data available.</p></div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="dashboard-card" id="weather-analysis-card">
+                <div class="card-header">
+                    <h2 class="card-title">🌦️ Weather Conditions</h2>
+                </div>
+                <div class="card-body">
+                    {% for stat in weather_stats %}
+                    <div class="report-stat-row">
+                        <span class="weather-badge">{{ stat.weather|title }}</span>
+                        <span class="report-count">{{ stat.count }} entries</span>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state"><p>No weather data available.</p></div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

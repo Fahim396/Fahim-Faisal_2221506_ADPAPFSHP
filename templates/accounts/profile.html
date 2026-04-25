@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">👤 My Profile</h1>
+            <p class="page-subtitle">Manage your account information</p>
+        </div>
+
+        <div class="profile-card">
+            <form method="post" enctype="multipart/form-data" class="auth-form" id="profile-form">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                <div class="form-error-box" id="profile-errors">
+                    <span class="error-icon">⚠️</span>
+                    <div class="error-list">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <p>{{ field.label }}: {{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="profile-first-name" class="form-label">First Name</label>
+                        {{ form.first_name }}
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-last-name" class="form-label">Last Name</label>
+                        {{ form.last_name }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="profile-email" class="form-label">Email</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-phone" class="form-label">Phone</label>
+                        {{ form.phone }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="profile-location" class="form-label">Location</label>
+                    {{ form.location }}
+                </div>
+
+                <div class="form-group">
+                    <label for="profile-image" class="form-label">Profile Image</label>
+                    {{ form.profile_image }}
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="profile-save">
+                    Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

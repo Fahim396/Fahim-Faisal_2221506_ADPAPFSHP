@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout admin-dashboard" id="admin-dashboard">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">⚙️ Admin Dashboard</h1>
+                <p class="page-subtitle">System overview and management</p>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid" id="admin-stats">
+            <div class="stat-card stat-card-primary" id="stat-farmers">
+                <div class="stat-icon">👨‍🌾</div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ total_farmers }}</span>
+                    <span class="stat-label">Total Farmers</span>
+                </div>
+            </div>
+            <div class="stat-card stat-card-info" id="stat-total-predictions">
+                <div class="stat-icon">🧠</div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ total_predictions }}</span>
+                    <span class="stat-label">Total Predictions</span>
+                </div>
+            </div>
+            <div class="stat-card stat-card-danger" id="stat-total-high-risk">
+                <div class="stat-icon">🔴</div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ high_risk }}</span>
+                    <span class="stat-label">High Risk Cases</span>
+                </div>
+            </div>
+            <div class="stat-card stat-card-success" id="stat-new-farmers">
+                <div class="stat-icon">📈</div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ new_farmers }}</span>
+                    <span class="stat-label">New (30 days)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Recent Predictions -->
+            <div class="dashboard-card" id="admin-recent-predictions">
+                <div class="card-header">
+                    <h2 class="card-title">📊 Recent Predictions</h2>
+                    <a href="{% url 'admin_panel:prediction_logs' %}" class="card-link">View All →</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_predictions %}
+                    <div class="table-responsive">
+                        <table class="data-table-compact">
+                            <thead>
+                                <tr>
+                                    <th>Farmer</th>
+                                    <th>Crop</th>
+                                    <th>Risk</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pred in recent_predictions %}
+                                <tr>
+                                    <td>{{ pred.farm_data.user.get_full_name|default:pred.farm_data.user.username }}
+                                    </td>
+                                    <td>{{ pred.farm_data.get_crop_type_display }}</td>
+                                    <td><span class="risk-badge risk-{{ pred.risk_level }}">{{
+                                            pred.get_risk_level_display }}</span></td>
+                                    <td>{{ pred.created_at|date:"M d" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <p>No predictions yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Risk Distribution -->
+            <div class="dashboard-card" id="admin-risk-dist">
+                <div class="card-header">
+                    <h2 class="card-title">📈 Risk Distribution</h2>
+                </div>
+                <div class="card-body">
+                    <div class="chart-placeholder" id="risk-chart">
+                        {% for item in risk_distribution %}
+                        <div class="chart-bar-item">
+                            <span class="chart-label">{{ item.risk_level|title }}</span>
+                            <div class="chart-bar-bg">
+                                <div class="chart-bar chart-bar-{{ item.risk_level }}"
+                                    style="width: {% widthratio item.count total_predictions 100 %}%"
+                                    data-count="{{ item.count }}">
+                                </div>
+                            </div>
+                            <span class="chart-count">{{ item.count }}</span>
+                        </div>
+                        {% empty %}
+                        <div class="empty-state">
+                            <p>No data available.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crop Distribution -->
+        <div class="dashboard-card full-width" id="admin-crop-dist">
+            <div class="card-header">
+                <h2 class="card-title">🌾 Crop Type Distribution</h2>
+            </div>
+            <div class="card-body">
+                <div class="crop-grid">
+                    {% for item in crop_distribution %}
+                    <div class="crop-stat-card" id="crop-{{ item.crop_type }}">
+                        <span class="crop-stat-name">{{ item.crop_type|title }}</span>
+                        <span class="crop-stat-count">{{ item.count }} entries</span>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        <p>No farm data entries yet.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Navigation -->
+        <div class="quick-actions" id="admin-quick-actions">
+            <h2 class="section-title-sm">Management</h2>
+            <div class="actions-grid">
+                <a href="{% url 'admin_panel:users' %}" class="action-card" id="action-users">
+                    <span class="action-icon">👨‍🌾</span>
+                    <span class="action-text">Manage Users</span>
+                </a>
+                <a href="{% url 'admin_panel:prediction_logs' %}" class="action-card" id="action-logs">
+                    <span class="action-icon">📋</span>
+                    <span class="action-text">Prediction Logs</span>
+                </a>
+                <a href="{% url 'admin_panel:reports' %}" class="action-card" id="action-reports">
+                    <span class="action-icon">📊</span>
+                    <span class="action-text">Reports</span>
+                </a>
+                <a href="{% url 'admin_panel:data_monitoring' %}" class="action-card" id="action-monitoring">
+                    <span class="action-icon">📡</span>
+                    <span class="action-text">Data Monitoring</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

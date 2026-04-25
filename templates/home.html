@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- ─── Hero Section ─────────────────────────────────────────── -->
+<section class="hero" id="hero-section">
+    <div class="hero-bg-overlay"></div>
+    <div class="hero-content">
+        <div class="hero-badge">🤖 AI-Powered Agriculture</div>
+        <h1 class="hero-title">
+            Predict Pest Attacks.<br>
+            <span class="hero-gradient">Protect Your Harvest.</span>
+        </h1>
+        <p class="hero-subtitle">
+            Leverage cutting-edge AI technology to detect pest threats early, 
+            receive smart recommendations, and plan your harvest with confidence.
+        </p>
+        <div class="hero-actions">
+            {% if user.is_authenticated %}
+                {% if user.is_farmer %}
+                    <a href="{% url 'farmer:dashboard' %}" class="btn btn-primary btn-lg" id="hero-cta">Go to Dashboard</a>
+                {% else %}
+                    <a href="{% url 'admin_panel:dashboard' %}" class="btn btn-primary btn-lg" id="hero-cta">Admin Dashboard</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-lg" id="hero-cta">Get Started Free</a>
+                <a href="{% url 'accounts:login' %}" class="btn btn-outline btn-lg" id="hero-login">Sign In</a>
+            {% endif %}
+        </div>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <span class="stat-number">10K+</span>
+                <span class="stat-label">Predictions Made</span>
+            </div>
+            <div class="hero-stat">
+                <span class="stat-number">95%</span>
+                <span class="stat-label">Accuracy Rate</span>
+            </div>
+            <div class="hero-stat">
+                <span class="stat-number">5K+</span>
+                <span class="stat-label">Farmers Helped</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Features Section ─────────────────────────────────────── -->
+<section class="features-section" id="features-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">How SmartHarvest Works</h2>
+            <p class="section-subtitle">Three simple steps to protect your crops</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card" id="feature-1">
+                <div class="feature-icon">📋</div>
+                <div class="feature-step">Step 1</div>
+                <h3 class="feature-title">Enter Farm Data</h3>
+                <p class="feature-desc">Input your crop type, soil condition, weather data, and planting information through our intuitive form.</p>
+            </div>
+            <div class="feature-card" id="feature-2">
+                <div class="feature-icon">🧠</div>
+                <div class="feature-step">Step 2</div>
+                <h3 class="feature-title">AI Analysis</h3>
+                <p class="feature-desc">Our AI engine analyzes environmental factors to predict pest attack probability and identify potential threats.</p>
+            </div>
+            <div class="feature-card" id="feature-3">
+                <div class="feature-icon">🛡️</div>
+                <div class="feature-step">Step 3</div>
+                <h3 class="feature-title">Get Recommendations</h3>
+                <p class="feature-desc">Receive actionable recommendations, risk assessments, and smart harvest planning advice.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Benefits Section ─────────────────────────────────────── -->
+<section class="benefits-section" id="benefits-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Why Choose SmartHarvest?</h2>
+            <p class="section-subtitle">Built by agricultural experts for modern farmers</p>
+        </div>
+        <div class="benefits-grid">
+            <div class="benefit-card" id="benefit-1">
+                <span class="benefit-icon">⚡</span>
+                <h4>Real-Time Alerts</h4>
+                <p>Instant notifications when pest risk levels change for your crops.</p>
+            </div>
+            <div class="benefit-card" id="benefit-2">
+                <span class="benefit-icon">📊</span>
+                <h4>Data-Driven Insights</h4>
+                <p>Comprehensive analytics and reports to track crop health over time.</p>
+            </div>
+            <div class="benefit-card" id="benefit-3">
+                <span class="benefit-icon">📱</span>
+                <h4>Mobile Ready</h4>
+                <p>Access your dashboard from any device, even in the field.</p>
+            </div>
+            <div class="benefit-card" id="benefit-4">
+                <span class="benefit-icon">🔒</span>
+                <h4>Secure & Private</h4>
+                <p>Your farm data is encrypted and never shared with third parties.</p>
+            </div>
+            <div class="benefit-card" id="benefit-5">
+                <span class="benefit-icon">🌍</span>
+                <h4>Multi-Crop Support</h4>
+                <p>Works with rice, wheat, corn, cotton, and many more crop types.</p>
+            </div>
+            <div class="benefit-card" id="benefit-6">
+                <span class="benefit-icon">📸</span>
+                <h4>Image Detection</h4>
+                <p>Upload pest images for visual identification and analysis.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── CTA Section ──────────────────────────────────────────── -->
+<section class="cta-section" id="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2 class="cta-title">Ready to Protect Your Harvest?</h2>
+            <p class="cta-desc">Join thousands of farmers using AI to make smarter agricultural decisions.</p>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-lg" id="cta-register">Create Free Account</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

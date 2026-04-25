@@ -1,0 +1,284 @@
+/* =============================================================================
+   PREDICTION RESULT PAGE STYLES (Dark Theme)
+   ============================================================================= */
+
+/* ─── Risk Hero ──────────────────────────────────────────────────────────── */
+.risk-hero {
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    margin-bottom: var(--space-8);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.risk-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.05;
+    background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2l2 3-2 3zm0 0v2H0v2h20v2l2-3-2-3z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.risk-hero-low {
+    background: radial-gradient(circle at right, rgba(16, 185, 129, 0.2), rgba(6, 7, 10, 0.8)),
+                var(--bg-card);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    box-shadow: inset 0 0 40px rgba(16, 185, 129, 0.1), 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.risk-hero-medium {
+    background: radial-gradient(circle at right, rgba(245, 158, 11, 0.2), rgba(6, 7, 10, 0.8)),
+                var(--bg-card);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    box-shadow: inset 0 0 40px rgba(245, 158, 11, 0.1), 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.risk-hero-high {
+    background: radial-gradient(circle at right, rgba(239, 68, 68, 0.2), rgba(6, 7, 10, 0.8)),
+                var(--bg-card);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    box-shadow: inset 0 0 40px rgba(239, 68, 68, 0.1), 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.risk-hero-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+}
+
+.risk-level-display {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+}
+
+.risk-emoji {
+    font-size: 4.5rem;
+    filter: drop-shadow(0 0 20px rgba(255,255,255,0.2));
+}
+
+.risk-level-text {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: var(--space-1);
+    letter-spacing: -0.5px;
+}
+
+.risk-hero-low .risk-level-text { text-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
+.risk-hero-medium .risk-level-text { text-shadow: 0 0 20px rgba(245, 158, 11, 0.5); }
+.risk-hero-high .risk-level-text { text-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+
+.risk-pest {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+/* ─── Confidence Circle ──────────────────────────────────────────────────── */
+.confidence-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.confidence-circle {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 50%;
+    box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.confidence-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.confidence-bg {
+    fill: none;
+    stroke: rgba(255,255,255,0.05);
+    stroke-width: 8;
+}
+
+.confidence-fill {
+    fill: none;
+    stroke: var(--primary-400);
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dasharray 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 0 5px var(--primary-400));
+}
+
+.risk-hero-high .confidence-fill { stroke: #f87171; filter: drop-shadow(0 0 5px #f87171); }
+.risk-hero-medium .confidence-fill { stroke: #fbbf24; filter: drop-shadow(0 0 5px #fbbf24); }
+.risk-hero-low .confidence-fill { stroke: #34d399; filter: drop-shadow(0 0 5px #34d399); }
+
+.confidence-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: white;
+}
+
+.confidence-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+/* ─── Result Grid ────────────────────────────────────────────────────────── */
+.result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+}
+
+.result-card {
+    padding: var(--space-6);
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+}
+
+.result-card-full {
+    grid-column: 1 / -1;
+}
+
+.result-card .card-title {
+    margin-bottom: var(--space-5);
+    font-size: 1.2rem;
+    color: white;
+}
+
+/* ─── Data Table (Result) ────────────────────────────────────────────────── */
+.result-card .data-table {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.result-card .data-row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--border-medium);
+}
+
+.result-card .data-row:last-child { border-bottom: none; }
+.data-label { font-size: 0.9rem; color: var(--text-secondary); }
+.data-value { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); }
+
+/* ─── Recommendations ────────────────────────────────────────────────────── */
+.recommendations-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.recommendation-item {
+    padding: var(--space-4);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    line-height: 1.6;
+    border-left: 4px solid var(--primary-500);
+    border-top: 1px solid var(--border-light);
+    border-right: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-light);
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+}
+
+/* ─── Risk Factors ───────────────────────────────────────────────────────── */
+.factors-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+}
+
+.factor-item {
+    padding: var(--space-5);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+}
+
+.factor-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-3);
+}
+
+.factor-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.factor-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: white;
+}
+
+.factor-bar-bg {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-bottom: var(--space-2);
+}
+
+.factor-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-600), var(--primary-400));
+    border-radius: var(--radius-full);
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.factor-score {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .risk-hero-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .risk-level-display {
+        flex-direction: column;
+    }
+
+    .result-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .factors-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .risk-level-text {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .factors-grid {
+        grid-template-columns: 1fr;
+    }
+}

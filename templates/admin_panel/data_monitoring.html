@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Data Monitoring{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout" id="monitoring-page">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">📡 Data Monitoring</h1>
+                <p class="page-subtitle">Monitor all farm data submissions</p>
+            </div>
+            <a href="{% url 'admin_panel:dashboard' %}" class="btn btn-outline">← Dashboard</a>
+        </div>
+
+        {% if farm_data %}
+        <div class="table-card" id="monitoring-table-card">
+            <div class="table-responsive">
+                <table class="data-table-full" id="monitoring-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Farmer</th>
+                            <th>Crop</th>
+                            <th>Soil</th>
+                            <th>Weather</th>
+                            <th>Temp (°C)</th>
+                            <th>Humidity (%)</th>
+                            <th>Planting Date</th>
+                            <th>Submitted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in farm_data %}
+                        <tr id="data-row-{{ data.pk }}">
+                            <td>#{{ data.pk }}</td>
+                            <td>{{ data.user.get_full_name|default:data.user.username }}</td>
+                            <td><span class="crop-badge">{{ data.get_crop_type_display }}</span></td>
+                            <td>{{ data.get_soil_condition_display }}</td>
+                            <td>{{ data.get_weather_display }}</td>
+                            <td>{{ data.temperature }}</td>
+                            <td>{{ data.humidity }}</td>
+                            <td>{{ data.planting_date|date:"M d, Y" }}</td>
+                            <td>{{ data.created_at|date:"M d, Y H:i" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state-large">
+            <span class="empty-icon-lg">📡</span>
+            <h2>No Data Entries</h2>
+            <p>No farm data has been submitted yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

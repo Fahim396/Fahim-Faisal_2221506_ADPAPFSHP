@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Farmer Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout" id="farmer-dashboard">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">🌾 Farmer Dashboard</h1>
+                <p class="page-subtitle">Welcome back, {{ user.first_name|default:user.username }}!</p>
+            </div>
+            <a href="{% url 'farmer:data_entry' %}" class="btn btn-primary" id="dashboard-new-prediction">
+                + Pest Prediction
+            </a>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid" id="dashboard-stats">
+            <div class="stat-card stat-card-primary" id="stat-predictions">
+                <div class="stat-icon">🧠</div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ prediction_count }}</span>
+                    <span class="stat-label">Total Predictions</span>
+                </div>
+            </div>
+            <div class="stat-card stat-card-success" id="stat-farm-data">
+                <div class="stat-icon">📋</div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ farm_data_count }}</span>
+                    <span class="stat-label">Farm Entries</span>
+                </div>
+            </div>
+            <div class="stat-card stat-card-danger" id="stat-high-risk">
+                <div class="stat-icon">⚠️</div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ high_risk_count }}</span>
+                    <span class="stat-label">High Risk Alerts</span>
+                </div>
+            </div>
+            <div class="stat-card stat-card-warning" id="stat-alerts">
+                <div class="stat-icon">🔔</div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ unread_alerts }}</span>
+                    <span class="stat-label">Unread Alerts</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Recent Predictions -->
+            <div class="dashboard-card" id="recent-predictions-card">
+                <div class="card-header">
+                    <h2 class="card-title">Recent Predictions</h2>
+                    <a href="{% url 'farmer:history' %}" class="card-link">View All →</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_predictions %}
+                    <div class="prediction-list">
+                        {% for pred in recent_predictions %}
+                        <a href="{% url 'prediction:result' pk=pred.pk %}" class="prediction-item" id="pred-{{ pred.pk }}">
+                            <div class="prediction-crop">
+                                <span class="crop-badge">{{ pred.farm_data.get_crop_type_display }}</span>
+                            </div>
+                            <div class="prediction-info">
+                                <span class="risk-badge risk-{{ pred.risk_level }}">
+                                    {{ pred.get_risk_level_display }} Risk
+                                </span>
+                                <span class="prediction-confidence">{{ pred.confidence_percent }}</span>
+                            </div>
+                            <div class="prediction-pest">{{ pred.predicted_pest }}</div>
+                            <div class="prediction-date">{{ pred.created_at|date:"M d, Y" }}</div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <span class="empty-icon">📊</span>
+                        <p>No predictions yet. Submit farm data to get started!</p>
+                        <a href="{% url 'farmer:data_entry' %}" class="btn btn-primary btn-sm">Create First Prediction</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Alerts -->
+            <div class="dashboard-card" id="recent-alerts-card">
+                <div class="card-header">
+                    <h2 class="card-title">🔔 Recent Alerts</h2>
+                    <a href="{% url 'farmer:alerts' %}" class="card-link">View All →</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_alerts %}
+                    <div class="alert-list">
+                        {% for alert in recent_alerts %}
+                        <div class="alert-item alert-{{ alert.severity }}" id="alert-{{ alert.pk }}">
+                            <div class="alert-severity">
+                                {% if alert.severity == 'critical' %}🔴
+                                {% elif alert.severity == 'warning' %}🟡
+                                {% else %}🔵{% endif %}
+                            </div>
+                            <div class="alert-content">
+                                <strong class="alert-title">{{ alert.title }}</strong>
+                                <p class="alert-message">{{ alert.message|truncatechars:100 }}</p>
+                                <span class="alert-time">{{ alert.created_at|timesince }} ago</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <span class="empty-icon">✅</span>
+                        <p>No unread alerts. Everything looks good!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions" id="quick-actions">
+            <h2 class="section-title-sm">Quick Actions</h2>
+            <div class="actions-grid">
+                <a href="{% url 'farmer:data_entry' %}" class="action-card" id="action-new-data">
+                    <span class="action-icon">📋</span>
+                    <span class="action-text">Enter Farm Data</span>
+                </a>
+                <a href="{% url 'farmer:history' %}" class="action-card" id="action-history">
+                    <span class="action-icon">📜</span>
+                    <span class="action-text">View History</span>
+                </a>
+                <a href="{% url 'farmer:alerts' %}" class="action-card" id="action-alerts">
+                    <span class="action-icon">🔔</span>
+                    <span class="action-text">Check Alerts</span>
+                </a>
+                <a href="{% url 'accounts:profile' %}" class="action-card" id="action-profile">
+                    <span class="action-icon">👤</span>
+                    <span class="action-text">Edit Profile</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

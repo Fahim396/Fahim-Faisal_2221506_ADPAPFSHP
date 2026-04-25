@@ -1,0 +1,120 @@
+/* =============================================================================
+   FORM STYLES — Data Entry Page (Dark Theme)
+   ============================================================================= */
+
+.form-card {
+    max-width: 800px;
+    padding: var(--space-8);
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-xl);
+}
+
+.data-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.form-section {
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--border-medium);
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.form-section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: var(--space-4);
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.form-section-title::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    background: var(--primary-400);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--primary-400);
+}
+
+/* ─── File Upload ────────────────────────────────────────────────────────── */
+.file-upload-area {
+    position: relative;
+    border: 2px dashed var(--border-medium);
+    border-radius: var(--radius-lg);
+    padding: var(--space-10) var(--space-6);
+    text-align: center;
+    transition: all var(--transition-base);
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.file-upload-area:hover {
+    border-color: var(--primary-400);
+    background: rgba(16, 185, 129, 0.05);
+    box-shadow: inset 0 0 20px rgba(16, 185, 129, 0.1);
+}
+
+.file-upload-area .form-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.upload-placeholder {
+    pointer-events: none;
+}
+
+.upload-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: var(--space-3);
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+.upload-placeholder p {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+    font-size: 1.1rem;
+}
+
+.upload-hint {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* ─── Form Actions ───────────────────────────────────────────────────────── */
+.form-actions {
+    display: flex;
+    gap: var(--space-4);
+    padding-top: var(--space-4);
+}
+
+.form-actions .btn {
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .form-card {
+        padding: var(--space-5);
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+}

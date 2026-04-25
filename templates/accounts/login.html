@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-section" id="login-section">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-icon">🌾</div>
+                <h1 class="auth-title">Welcome Back</h1>
+                <p class="auth-subtitle">Sign in to your SmartHarvest account</p>
+            </div>
+
+            <form method="post" class="auth-form" id="login-form">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                <div class="form-error-box" id="login-errors">
+                    <span class="error-icon">⚠️</span>
+                    <p>Invalid username or password. Please try again.</p>
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="login-username" class="form-label">Username</label>
+                    {{ form.username }}
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password" class="form-label">Password</label>
+                    {{ form.password }}
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full" id="login-submit">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="{% url 'accounts:register' %}" id="login-register-link">Create one</a></p>
+            </div>
+        </div>
+
+        <div class="auth-decoration">
+            <div class="decoration-content">
+                <h2>Smart Pest Prediction</h2>
+                <p>Protect your crops with AI-powered analysis and real-time alerts.</p>
+                <div class="decoration-features">
+                    <div class="dec-feature">✓ Real-time pest risk assessment</div>
+                    <div class="dec-feature">✓ Smart harvest recommendations</div>
+                    <div class="dec-feature">✓ Historical data tracking</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

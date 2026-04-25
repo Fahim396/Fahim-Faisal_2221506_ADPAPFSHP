@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Smart Harvest - AI-Driven Pest Attack Prediction for Smart Agricultural Planning">
+    <title>{% block title %}Smart Harvest{% endblock %} | AI Pest Prediction</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+    {% block extra_css %}{% endblock %}
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>">
+</head>
+<body>
+    <!-- ─── Navigation ─────────────────────────────────────────── -->
+    <nav class="navbar" id="main-navbar">
+        <div class="navbar-container">
+            <a href="{% url 'home' %}" class="navbar-brand" id="nav-brand">
+                <span class="brand-icon">🌾</span>
+                <span class="brand-text">Smart<strong>Harvest</strong></span>
+            </a>
+
+            <button class="navbar-toggle" id="nav-toggle" aria-label="Toggle navigation">
+                <span class="toggle-bar"></span>
+                <span class="toggle-bar"></span>
+                <span class="toggle-bar"></span>
+            </button>
+
+            <ul class="navbar-menu" id="nav-menu">
+                <li><a href="{% url 'home' %}" class="nav-link" id="nav-home">Home</a></li>
+
+                {% if user.is_authenticated %}
+                    {% if user.is_farmer %}
+                        <li><a href="{% url 'farmer:dashboard' %}" class="nav-link" id="nav-dashboard">Dashboard</a></li>
+                        <li><a href="{% url 'farmer:data_entry' %}" class="nav-link" id="nav-data-entry">Pest Prediction</a></li>
+                        <li><a href="{% url 'farmer:history' %}" class="nav-link" id="nav-history">History</a></li>
+                        <li>
+                            <a href="{% url 'farmer:alerts' %}" class="nav-link nav-alert-link" id="nav-alerts">
+                                Alerts
+                                {% if unread_alert_count %}
+                                    <span class="alert-badge">{{ unread_alert_count }}</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                    {% elif user.is_admin_user %}
+                        <li><a href="{% url 'admin_panel:dashboard' %}" class="nav-link" id="nav-admin-dashboard">Dashboard</a></li>
+                        <li><a href="{% url 'admin_panel:users' %}" class="nav-link" id="nav-users">Users</a></li>
+                        <li><a href="{% url 'admin_panel:prediction_logs' %}" class="nav-link" id="nav-logs">Logs</a></li>
+                        <li><a href="{% url 'admin_panel:reports' %}" class="nav-link" id="nav-reports">Reports</a></li>
+                    {% endif %}
+
+                    <li class="nav-user-menu">
+                        <a href="{% url 'accounts:profile' %}" class="nav-link nav-user" id="nav-profile">
+                            <span class="user-avatar">{{ user.first_name|first }}{{ user.last_name|first }}</span>
+                            {{ user.first_name|default:user.username }}
+                        </a>
+                    </li>
+                    <li><a href="{% url 'accounts:logout' %}" class="nav-link nav-logout" id="nav-logout">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'accounts:login' %}" class="nav-link" id="nav-login">Login</a></li>
+                    <li><a href="{% url 'accounts:register' %}" class="nav-link btn-nav" id="nav-register">Get Started</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ─── Messages ───────────────────────────────────────────── -->
+    {% if messages %}
+    <div class="messages-container" id="messages-container">
+        {% for message in messages %}
+        <div class="message message-{{ message.tags }}" id="message-{{ forloop.counter }}">
+            <span class="message-text">{{ message }}</span>
+            <button class="message-close" onclick="this.parentElement.remove()" aria-label="Close">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ─── Main Content ───────────────────────────────────────── -->
+    <main class="main-content" id="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ─── Footer ─────────────────────────────────────────────── -->
+    <footer class="footer" id="main-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3 class="footer-title">
+                        <span class="brand-icon">🌾</span> SmartHarvest
+                    </h3>
+                    <p class="footer-desc">AI-powered pest prediction platform helping farmers protect their crops and plan smarter harvests.</p>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'accounts:profile' %}">Profile</a></li>
+                        {% else %}
+                        <li><a href="{% url 'accounts:login' %}">Login</a></li>
+                        <li><a href="{% url 'accounts:register' %}">Register</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Contact</h4>
+                    <ul class="footer-links">
+                        <li>support@smartharvest.ai</li>
+                        <li>+1 (555) 123-4567</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 SmartHarvest. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ─── Scripts ────────────────────────────────────────────── -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

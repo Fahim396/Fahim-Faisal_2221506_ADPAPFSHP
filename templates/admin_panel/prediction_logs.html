@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Prediction Logs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout" id="prediction-logs-page">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">📋 Prediction Logs</h1>
+                <p class="page-subtitle">View all system-wide pest predictions</p>
+            </div>
+            <a href="{% url 'admin_panel:dashboard' %}" class="btn btn-outline">← Dashboard</a>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-bar" id="log-filters">
+            <form method="get" class="filter-form" id="filter-form">
+                <div class="filter-group">
+                    <label class="filter-label">Risk Level:</label>
+                    <select name="risk" class="form-input form-input-sm" id="filter-risk">
+                        <option value="">All Risks</option>
+                        <option value="low" {% if risk_filter == 'low' %}selected{% endif %}>Low</option>
+                        <option value="medium" {% if risk_filter == 'medium' %}selected{% endif %}>Medium</option>
+                        <option value="high" {% if risk_filter == 'high' %}selected{% endif %}>High</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Crop Type:</label>
+                    <select name="crop" class="form-input form-input-sm" id="filter-crop">
+                        <option value="">All Crops</option>
+                        {% for value, label in crop_choices %}
+                        <option value="{{ value }}" {% if crop_filter == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm" id="apply-filters">Apply Filters</button>
+                <a href="{% url 'admin_panel:prediction_logs' %}" class="btn btn-outline btn-sm" id="clear-filters">Clear</a>
+            </form>
+        </div>
+
+        {% if predictions %}
+        <div class="table-card" id="logs-table-card">
+            <div class="table-responsive">
+                <table class="data-table-full" id="logs-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Farmer</th>
+                            <th>Crop</th>
+                            <th>Weather</th>
+                            <th>Risk Level</th>
+                            <th>Confidence</th>
+                            <th>Predicted Pest</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pred in predictions %}
+                        <tr id="log-row-{{ pred.pk }}">
+                            <td>#{{ pred.pk }}</td>
+                            <td>{{ pred.farm_data.user.get_full_name|default:pred.farm_data.user.username }}</td>
+                            <td><span class="crop-badge">{{ pred.farm_data.get_crop_type_display }}</span></td>
+                            <td>{{ pred.farm_data.get_weather_display }}</td>
+                            <td><span class="risk-badge risk-{{ pred.risk_level }}">{{ pred.get_risk_level_display }}</span></td>
+                            <td>{{ pred.confidence_percent }}</td>
+                            <td>{{ pred.predicted_pest }}</td>
+                            <td>{{ pred.created_at|date:"M d, Y H:i" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state-large">
+            <span class="empty-icon-lg">📋</span>
+            <h2>No Prediction Logs</h2>
+            <p>{% if risk_filter or crop_filter %}No predictions match your filters.{% else %}No predictions have been generated yet.{% endif %}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

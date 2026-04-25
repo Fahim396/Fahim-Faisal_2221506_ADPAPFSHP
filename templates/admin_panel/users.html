@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}User Management{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout" id="users-page">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">👨‍🌾 User Management</h1>
+                <p class="page-subtitle">Manage farmer accounts</p>
+            </div>
+            <a href="{% url 'admin_panel:dashboard' %}" class="btn btn-outline">← Dashboard</a>
+        </div>
+
+        {% if users %}
+        <div class="table-card" id="users-table-card">
+            <div class="table-responsive">
+                <table class="data-table-full" id="users-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Location</th>
+                            <th>Joined</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for farmer in users %}
+                        <tr id="user-row-{{ farmer.pk }}">
+                            <td>
+                                <div class="user-cell">
+                                    <span class="user-avatar-sm">{{ farmer.first_name|first }}{{ farmer.last_name|first }}</span>
+                                    {{ farmer.get_full_name|default:farmer.username }}
+                                </div>
+                            </td>
+                            <td>{{ farmer.username }}</td>
+                            <td>{{ farmer.email }}</td>
+                            <td>{{ farmer.location|default:"—" }}</td>
+                            <td>{{ farmer.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                {% if farmer.is_active %}
+                                    <span class="status-badge status-active">Active</span>
+                                {% else %}
+                                    <span class="status-badge status-inactive">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <form method="post" action="{% url 'admin_panel:toggle_user' pk=farmer.pk %}" class="inline-form">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm {% if farmer.is_active %}btn-warning{% else %}btn-success{% endif %}" id="toggle-{{ farmer.pk }}">
+                                            {% if farmer.is_active %}Deactivate{% else %}Activate{% endif %}
+                                        </button>
+                                    </form>
+                                    <form method="post" action="{% url 'admin_panel:delete_user' pk=farmer.pk %}" class="inline-form"
+                                          onsubmit="return confirm('Are you sure you want to delete {{ farmer.username }}?')">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger" id="delete-{{ farmer.pk }}">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state-large">
+            <span class="empty-icon-lg">👨‍🌾</span>
+            <h2>No Farmers Registered</h2>
+            <p>No farmer accounts have been created yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

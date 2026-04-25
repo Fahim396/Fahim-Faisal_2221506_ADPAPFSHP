@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Enter Farm Data{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout" id="data-entry-page">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">📋 Farm Data Entry</h1>
+                <p class="page-subtitle">Enter your farm details for AI pest attack prediction</p>
+            </div>
+            <a href="{% url 'farmer:dashboard' %}" class="btn btn-outline" id="back-dashboard">← Dashboard</a>
+        </div>
+
+        <div class="form-card" id="data-entry-form-card">
+            <form method="post" enctype="multipart/form-data" class="data-form" id="data-entry-form">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                <div class="form-error-box" id="data-entry-errors">
+                    <span class="error-icon">⚠️</span>
+                    <div class="error-list">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <p><strong>{{ field.label }}:</strong> {{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="form-section">
+                    <h3 class="form-section-title">🌱 Crop Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="farm-crop-type" class="form-label">Crop Type *</label>
+                            {{ form.crop_type }}
+                        </div>
+                        <div class="form-group">
+                            <label for="farm-planting-date" class="form-label">Planting Date *</label>
+                            {{ form.planting_date }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="farm-area" class="form-label">Farm Area (acres)</label>
+                        {{ form.farm_area }}
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="form-section-title">🌍 Environmental Conditions</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="farm-soil" class="form-label">Soil Condition *</label>
+                            {{ form.soil_condition }}
+                        </div>
+                        <div class="form-group">
+                            <label for="farm-weather" class="form-label">Weather *</label>
+                            {{ form.weather }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="farm-temp" class="form-label">Temperature (°C)</label>
+                            {{ form.temperature }}
+                        </div>
+                        <div class="form-group">
+                            <label for="farm-humidity" class="form-label">Humidity (%)</label>
+                            {{ form.humidity }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="form-section-title">📸 Pest Image</h3>
+                    <div class="file-upload-area" id="file-upload-area">
+                        <div class="upload-placeholder">
+                            <span class="upload-icon">📷</span>
+                            <p>Drag & drop an image or click to browse</p>
+                            <span class="upload-hint">Supports: JPG, PNG, WEBP (Max 10MB)</span>
+                        </div>
+                        {{ form.pest_image }}
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="form-section-title">📝 Additional Notes</h3>
+                    {{ form.notes }}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-lg" id="submit-prediction">
+                        🧠 Generate Prediction
+                    </button>
+                    <button type="reset" class="btn btn-outline" id="reset-form">
+                        Clear Form
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
