@@ -69,6 +69,9 @@
                     <li><a href="{% url 'accounts:login' %}" class="nav-link" id="nav-login">Login</a></li>
                     <li><a href="{% url 'accounts:register' %}" class="nav-link btn-nav" id="nav-register">Get Started</a></li>
                 {% endif %}
+                <li class="nav-item">
+                    <div id="google_translate_element"></div>
+                </li>
             </ul>
         </div>
     </nav>
@@ -128,6 +131,19 @@
 
     <!-- ─── Scripts ────────────────────────────────────────────── -->
     <script src="{% static 'js/main.js' %}"></script>
+    
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en', 
+                includedLanguages: 'en,bn',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
     {% block extra_js %}{% endblock %}
 </body>
 </html>
