@@ -19,8 +19,18 @@
 
     <!-- Google Translate Customization Styles -->
     <style>
-        .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon { display: none !important; }
-        body { top: 0px !important; }
+        /* Completely hide Google Translate Banner */
+        .goog-te-banner-frame.skiptranslate, 
+        .goog-te-banner-frame, 
+        #goog-gt-tt, 
+        .goog-te-balloon-frame,
+        .VIpgJd-ZVi9od-ORHb-OEVmcd { 
+            display: none !important; 
+        }
+        body, html { 
+            top: 0px !important; 
+            margin-top: 0px !important; 
+        }
         .goog-tooltip { display: none !important; }
         .goog-tooltip:hover { display: none !important; }
         .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
