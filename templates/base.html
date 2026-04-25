@@ -17,6 +17,40 @@
     <link rel="stylesheet" href="{% static 'css/components.css' %}">
     {% block extra_css %}{% endblock %}
 
+    <!-- Google Translate Customization Styles -->
+    <style>
+        .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon { display: none !important; }
+        body { top: 0px !important; }
+        .goog-tooltip { display: none !important; }
+        .goog-tooltip:hover { display: none !important; }
+        .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+
+        .custom-lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background-color: transparent;
+            border: none;
+            color: #d1fae5;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .custom-lang-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: #ffffff;
+        }
+        .custom-lang-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: #5eead4;
+        }
+    </style>
+
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>">
 </head>
@@ -69,8 +103,16 @@
                     <li><a href="{% url 'accounts:login' %}" class="nav-link" id="nav-login">Login</a></li>
                     <li><a href="{% url 'accounts:register' %}" class="nav-link btn-nav" id="nav-register">Get Started</a></li>
                 {% endif %}
-                <li class="nav-item">
-                    <div id="google_translate_element"></div>
+                <li class="nav-item" style="display: flex; align-items: center;">
+                    <button id="custom-lang-btn" class="custom-lang-btn" onclick="toggleLanguage()">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                        <span id="lang-text">Bangla</span>
+                    </button>
+                    <div id="google_translate_element" style="display: none;"></div>
                 </li>
             </ul>
         </div>
@@ -138,9 +180,48 @@
             new google.translate.TranslateElement({
                 pageLanguage: 'en', 
                 includedLanguages: 'en,bn',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
             }, 'google_translate_element');
         }
+
+        function getCookie(name) {
+            let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            if (match) return match[2];
+            return null;
+        }
+
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                let date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+        }
+
+        function updateLangButton() {
+            let lang = getCookie('googtrans');
+            let btnText = document.getElementById('lang-text');
+            if (lang === '/en/bn') {
+                btnText.innerText = 'English';
+            } else {
+                btnText.innerText = 'Bangla';
+            }
+        }
+
+        function toggleLanguage() {
+            let lang = getCookie('googtrans');
+            if (lang === '/en/bn') {
+                setCookie('googtrans', '/en/en', 30);
+            } else {
+                setCookie('googtrans', '/en/bn', 30);
+            }
+            window.location.reload();
+        }
+
+        document.addEventListener('DOMContentLoaded', updateLangButton);
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
