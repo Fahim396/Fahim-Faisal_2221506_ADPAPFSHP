@@ -32,9 +32,16 @@ class AdminDashboardView(View):
         total_alerts = Alert.objects.filter(is_read=False).count()
 
         # Risk distribution for chart data
-        risk_distribution = Prediction.objects.values('risk_level').annotate(
+        risk_qs = Prediction.objects.values('risk_level').annotate(
             count=Count('id')
-        ).order_by('risk_level')
+        )
+        risk_map = {item['risk_level']: item['count'] for item in risk_qs}
+        
+        risk_distribution = [
+            {'risk_level': 'low', 'count': risk_map.get('low', 0)},
+            {'risk_level': 'medium', 'count': risk_map.get('medium', 0)},
+            {'risk_level': 'high', 'count': risk_map.get('high', 0)},
+        ]
 
         # Crop distribution
         crop_distribution = FarmData.objects.values('crop_type').annotate(
@@ -149,10 +156,17 @@ class ReportsView(View):
 
     def get(self, request):
         # Generate report data
-        risk_stats = Prediction.objects.values('risk_level').annotate(
+        risk_stats_qs = Prediction.objects.values('risk_level').annotate(
             count=Count('id'),
             avg_confidence=Avg('confidence_score')
         )
+        risk_stats_map = {item['risk_level']: item for item in risk_stats_qs}
+        
+        risk_stats = [
+            {'risk_level': 'low', 'count': risk_stats_map.get('low', {}).get('count', 0), 'avg_confidence': risk_stats_map.get('low', {}).get('avg_confidence', 0.0)},
+            {'risk_level': 'medium', 'count': risk_stats_map.get('medium', {}).get('count', 0), 'avg_confidence': risk_stats_map.get('medium', {}).get('avg_confidence', 0.0)},
+            {'risk_level': 'high', 'count': risk_stats_map.get('high', {}).get('count', 0), 'avg_confidence': risk_stats_map.get('high', {}).get('avg_confidence', 0.0)},
+        ]
 
         crop_stats = FarmData.objects.values('crop_type').annotate(
             count=Count('id')
